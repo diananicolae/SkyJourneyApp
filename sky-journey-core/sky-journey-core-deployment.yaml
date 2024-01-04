@@ -5,7 +5,7 @@ metadata:
   labels:
     app: sky-journey-core
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: sky-journey-core
@@ -23,5 +23,7 @@ spec:
               value: "mongodb://sky-journey-db:27017/sky-journey-database"
             - name: PAYMENT_SERVICE_URI
               value: "http://sky-journey-payment:8081"
+            - name: AUTH_SERVICE_URI
+              value: "http://sky-journey-auth:8082"
           ports:
             - containerPort: 8080

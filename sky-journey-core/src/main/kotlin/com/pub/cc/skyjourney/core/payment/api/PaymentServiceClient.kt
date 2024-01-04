@@ -7,12 +7,12 @@ import reactor.core.publisher.Mono
 
 @Service
 class PaymentServiceClient(
-    @Value("\${payment.service.url}")
-    private val paymentServiceUrl: String
+    @Value("\${payment.service.uri}")
+    private val paymentServiceUri: String
 ) {
 
     private val webClient: WebClient = WebClient.builder()
-        .baseUrl(paymentServiceUrl)
+        .baseUrl(paymentServiceUri)
         .build()
 
     fun makePayment(paymentRequest: PaymentRequest): Mono<PaymentResponse> {
