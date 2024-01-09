@@ -20,10 +20,10 @@ spec:
           imagePullPolicy: Always
           env:
             - name: MONGODB_URI
-              value: "mongodb://sky-journey-db:27017/sky-journey-database"
+              value: "mongodb://sky-journey-db-service:27017/sky-journey-database"
             - name: PAYMENT_SERVICE_URI
-              value: "http://sky-journey-payment:8081"
+              value: "http://sky-journey-payment-service:8081"
             - name: AUTH_SERVICE_URI
-              value: "http://sky-journey-auth:8082"
+              value: "http://sky-journey-auth-service:8082"
           ports:
             - containerPort: 8080
