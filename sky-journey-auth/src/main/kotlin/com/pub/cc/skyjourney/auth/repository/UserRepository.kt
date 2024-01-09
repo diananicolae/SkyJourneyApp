@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface CredentialsRepository : MongoRepository<ApplicationUser, String> {
+interface UserRepository : MongoRepository<ApplicationUser, String> {
     fun findByUsername(username: String): ApplicationUser?
 }

@@ -1,8 +1,6 @@
 package com.pub.cc.skyjourney.auth.config
 
-import com.pub.cc.skyjourney.auth.handler.CustomAuthenticationSuccessHandler
 import com.pub.cc.skyjourney.auth.service.MongoUserDetailsService
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -19,22 +17,9 @@ import org.springframework.security.web.SecurityFilterChain
 @EnableWebSecurity
 class SecurityConfig {
 
-    @Value("\${core.service.home.uri}")
-    lateinit var coreServiceHomeUri: String
-
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http {
-//            authorizeHttpRequests {
-//                authorize(anyRequest, permitAll)
-//            }
-//            formLogin {
-//                permitAll()
-//                loginPage = "/login"
-//                authenticationSuccessHandler = CustomAuthenticationSuccessHandler(coreServiceHomeUri)
-//
-//            }
-//            httpBasic { }
             authorizeHttpRequests {
                 authorize(anyRequest, permitAll)
             }
@@ -50,9 +35,10 @@ class SecurityConfig {
         userDetailsService: MongoUserDetailsService,
         passwordEncoder: PasswordEncoder
     ): AuthenticationManager {
-        val authenticationProvider = DaoAuthenticationProvider()
-        authenticationProvider.setUserDetailsService(userDetailsService)
-        authenticationProvider.setPasswordEncoder(passwordEncoder)
+        val authenticationProvider = DaoAuthenticationProvider().apply {
+            setUserDetailsService(userDetailsService)
+            setPasswordEncoder(passwordEncoder)
+        }
 
         return ProviderManager(authenticationProvider)
     }

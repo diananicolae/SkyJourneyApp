@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
     path = ["/bookings"],
     produces = [MediaType.APPLICATION_JSON_VALUE]
 )
+@CrossOrigin(origins = ["*", "http://sky-journey-ui-service"])
 class BookingController(
     private val bookingService: BookingService
 ) {
@@ -51,7 +52,7 @@ class BookingController(
         return ResponseEntity.ok(booking)
     }
 
-    @PutMapping("/{bookingId}/checkIn")
+    @PutMapping("/{bookingId}/check-in")
     fun checkInBooking(
         @PathVariable bookingId: String
     ): ResponseEntity<Booking> {
@@ -65,5 +66,14 @@ class BookingController(
         bookingService.deleteAllBookings()
 
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/user/{userId}")
+    fun getUserBookings(
+        @PathVariable userId: String
+    ): ResponseEntity<List<Booking>> {
+        val bookings = bookingService.getBookingsByUserId(userId)
+
+        return ResponseEntity.ok(bookings)
     }
 }

@@ -57,6 +57,10 @@ class BookingService(
             throw RuntimeException("Canceling is unavailable! Check-in has been completed.")
         }
 
+        if (booking.status == BookingStatus.CANCELLED) {
+            throw RuntimeException("Canceling is unavailable! Booking has already been cancelled.")
+        }
+
         return bookingRepository.findById(bookingId).map {
             val updated = it.copy(status = BookingStatus.CANCELLED)
             bookingRepository.save(updated)
@@ -68,6 +72,10 @@ class BookingService(
 
         if (booking.status == BookingStatus.CANCELLED) {
             throw RuntimeException("Check-in is unavailable! Booking has been cancelled.")
+        }
+
+        if (booking.status == BookingStatus.CHECKED_IN) {
+            throw RuntimeException("Check-in is unavailable! Check-in has already been completed.")
         }
 
         return bookingRepository.findById(bookingId).map {

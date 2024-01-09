@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*
     path = ["/payment"],
     produces = [MediaType.APPLICATION_JSON_VALUE]
 )
+@CrossOrigin(origins = ["*", "http://sky-journey-ui-service"])
 class PaymentController(
     private val paymentService: PaymentService
 ) {

@@ -1,20 +1,32 @@
 package com.pub.cc.skyjourney.auth.controller
 
 import com.pub.cc.skyjourney.auth.model.ApplicationUser
+import com.pub.cc.skyjourney.auth.model.CreateUserRequest
 import com.pub.cc.skyjourney.auth.service.UserService
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-class UserController(private val userService: UserService) {
+@RequestMapping(
+    path = ["/users"],
+    produces = [MediaType.APPLICATION_JSON_VALUE]
+)
+@CrossOrigin(origins = ["*", "http://sky-journey-ui-service"])
+class UserController(
+    private val userService: UserService
+) {
 
     @PostMapping("/create-account")
-    fun createAccount(@RequestBody userRequest: UserRequest): ResponseEntity<ApplicationUser> {
-        val user = userService.createUser(userRequest.username, userRequest.password)
+    fun createAccount(@RequestBody createUserRequest: CreateUserRequest): ResponseEntity<ApplicationUser> {
+        val user = userService.createUser(createUserRequest)
         return ResponseEntity.ok(user)
     }
 
-    data class UserRequest(val username: String, val password: String)
+    @GetMapping
+    fun getUsers(): ResponseEntity<List<ApplicationUser>> {
+        val users = userService.getAllUsers()
+
+        return ResponseEntity.ok(users)
+    }
 }

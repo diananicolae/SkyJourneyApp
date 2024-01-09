@@ -8,7 +8,11 @@ OpenAPI documentation can be found by running the application and accessing http
 
 ## Microservices
 
-1. **sky-journey-core**
+1. **sky-journey-ui**
+
+The frontend microservice that handles the user interface of the application. Runs on port `80`.
+
+2. **sky-journey-core**
 
 The core microservice that handles all the business logic of the application. Runs on port `8080`.
 Functionality includes searching for flights, creating bookings, and getting booking details.
@@ -19,26 +23,33 @@ Functionality includes searching for flights, creating bookings, and getting boo
 | **GET** /flights/{flightId}          | List a specific flight for a given flightId.                                                                | GET http://localhost:8080/flights/FL2820                                                                                                                                                                                                                    |
 | **GET** /flights/search              | Search for flights with a set of filters. Can be filtered by airport origin, destination, airline and date. | GET http://localhost:8080/flights/search?origin=ATL&destination=LAX <br/> GET http://localhost:8080/flights/search?origin=ATL&destination=LAX&airlines=AIR_CANADA <br/> GET http://localhost:8080/flights/search?origin=ATL&destination=LAX&date=2024-01-13 |
 
-| Booking APIs                          | Details                                        | Examples                                                                                                                                                                                                                               |
-|---------------------------------------|------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **GET** /bookings                     | List all existing bookings.                    | GET http://localhost:8080/bookings                                                                                                                                                                                                     |
-| **GET** /bookings/{bookingId}         | List a specific booking for a given bookingId. | GET http://localhost:8080/bookings/706224ca-7b2f-4610-ba5b-22c193ac234e                                                                                                                                                                |
-| **POST** /bookings/create             | Create a booking for a specific flight.        | POST http://localhost:8080/bookings/create <br/> Content-Type: application/json <br/> ``` { "userId": 1, "flightId": 2, "paymentId": 1, "seat": "1A", "paymentRequest": {"userId": 1, "amount": 100.00, "method": "CREDIT_CARD"} } ``` |
-| **PUT** /bookings/{bookingId}/checkIn | Check-in for a booked flight.                  | PUT http://localhost:8080/bookings/706224ca-7b2f-4610-ba5b-22c193ac234e/checkIn                                                                                                                                                        |
-| **PUT** /bookings/{bookingId}/cancel  | Cancel a booked flight.                        | PUT http://localhost:8080/bookings/706224ca-7b2f-4610-ba5b-22c193ac234e/cancel                                                                                                                                                         |
-| **DELETE** /bookings                  | Delete all bookings.                           | DELETE http://localhost:8080/bookings                                                                                                                                                                                                  |
+| Booking APIs                           | Details                                        | Examples                                                                                                                                                                                                                             |
+|----------------------------------------|------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **GET** /bookings                      | List all existing bookings.                    | GET http://localhost:8080/bookings                                                                                                                                                                                                   |
+| **GET** /bookings/{bookingId}          | List a specific booking for a given bookingId. | GET http://localhost:8080/bookings/706224ca-7b2f-4610-ba5b-22c193ac234e                                                                                                                                                              |
+| **POST** /bookings/create              | Create a booking for a specific flight.        | POST http://localhost:8080/bookings/create <br/> Content-Type: application/json <br/> ``` { "userId": 1, "flightId": 2, "paymentId": 1, "seat": "1A", "paymentRequest": {"userId": 1, "amount": 100.00, "method": "CREDIT_CARD"} } ``` |
+| **PUT** /bookings/{bookingId}/check-in | Check-in for a booked flight.                  | PUT http://localhost:8080/bookings/706224ca-7b2f-4610-ba5b-22c193ac234e/check-in                                                                                                                                                     |
+| **PUT** /bookings/{bookingId}/cancel   | Cancel a booked flight.                        | PUT http://localhost:8080/bookings/706224ca-7b2f-4610-ba5b-22c193ac234e/cancel                                                                                                                                                       |
+| **DELETE** /bookings                   | Delete all bookings.                           | DELETE http://localhost:8080/bookings                                                                                                                                                                                                |
+| **GET** /bookings/user/{userId}        | Get all existing bookings for a specific user. | GET http://localhost:8080/bookings/user/12345                                                                                                                                                                                |
 
-| User APIs                        | Details                                        | Examples                                       |
-|----------------------------------|------------------------------------------------|------------------------------------------------|
-| **GET** /users/{userId}          | Get a specific user for a given userId.        | GET http://localhost:8080/users/12345          |
-| **GET** /users/{userId}/bookings | Get all existing bookings for a specific user. | GET http://localhost:8080/users/12345/bookings |
-
-2. **sky-journey-payment**
+3. **sky-journey-payment**
 
 Payment microservice that handles payments in the application. Runs on port `8081`.
 At the moment it's a dummy service that always returns a successful payment.
 
-3. **sky-journey-db**
+4. **sky-journey-auth**
+
+Authentication and authorization microservice that handles user log in and account creation. Runs on port `8082`.
+API calls on /login return a JWT token that can be used to authorize the user for API calls to the core service.
+
+| User APIs                      | Details                            | Examples                                                                                                                                                    |
+|--------------------------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **POST** /login                | Log into an existing user account. | POST http://localhost:8082/login <br/> Content-Type: application/json <br/> ``` { "username": "test", "password": "test"}                                   |
+| **GET** /users                 | Get all existing user accounts.    | GET http://localhost:8080/users                                                                                                                             |
+| **POST** /users/create-account | Create a new user account.         | POST http://localhost:8080/users/create-account <br/> Content-Type: application/json <br/> ``` { "name":"Test Test", username": "test", "password": "test"} |
+
+5. **sky-journey-db**
 
 MongoDB database microservice, stores all the data of the application. Runs on port `27017`.
 To start the Docker container run the following commands:
