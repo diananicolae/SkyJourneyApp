@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sky-journey-portainer-deployment
-  namespace: default
+  namespace: portainer
 spec:
   replicas: 1
   selector:

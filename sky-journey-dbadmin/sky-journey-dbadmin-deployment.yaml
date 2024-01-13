@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sky-journey-dbadmin-deployment
+  namespace: dbadmin
   labels:
     app: sky-journey-dbadmin
 spec:
@@ -20,11 +21,5 @@ spec:
           ports:
             - containerPort: 8081
           env:
-            # - name: MONGODB_URI
-            #   value: "mongodb://sky-journey-db-service:27017/sky-journey-database"
             - name: ME_CONFIG_MONGODB_SERVER
-              value: "sky-journey-db-service" # Name of your MongoDB service
-            # - name: ME_CONFIG_MONGODB_ADMINUSERNAME
-            #   value: "admin" # Replace with your MongoDB admin username
-            # - name: ME_CONFIG_MONGODB_ADMINPASSWORD
-            #   value: "admin" # Replace with your MongoDB admin password
+              value: "sky-journey-db-service.core.svc.cluster.local"

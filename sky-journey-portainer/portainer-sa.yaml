@@ -2,4 +2,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: portainer-sa
-  namespace: default
+  namespace: portainer

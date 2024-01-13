@@ -3,7 +3,31 @@ provider "kubernetes" {
   config_context_cluster = "kind-kind"
 }
 
+resource "kubernetes_namespace" "core" {
+  metadata {
+    name = "core"
+  }
+}
+
+resource "kubernetes_namespace" "portainer" {
+  metadata {
+    name = "portainer"
+  }
+}
+
+resource "kubernetes_namespace" "dbadmin" {
+  metadata {
+    name = "dbadmin"
+  }
+}
+
 resource "null_resource" "kind_cluster" {
+  depends_on = [
+    kubernetes_namespace.core,
+    kubernetes_namespace.portainer,
+    kubernetes_namespace.dbadmin
+  ]
+
   triggers = {
     kubernetes_resources = sha256(join(",", [
       filesha256("sky-journey-auth/sky-journey-auth-deployment.yaml"),
@@ -25,10 +49,6 @@ resource "null_resource" "kind_cluster" {
       filesha256("sky-journey-ui/sky-journey-ui-service.yaml"),
       "https://downloads.portainer.io/ce2-19/portainer-agent-k8s-nodeport.yaml"
     ]))
-  }
-
-  provisioner "local-exec" {
-    command = "kind create cluster --config k8s-config/cluster-config.yaml"
   }
 
   provisioner "local-exec" {
