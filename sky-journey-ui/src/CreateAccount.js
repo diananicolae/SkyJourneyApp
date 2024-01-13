@@ -3,6 +3,8 @@ import axios from "axios";
 import "./CreateAccount.css";
 
 function CreateAccount({ onLoginSuccess }) {
+  const [accountCreationError, setAccountCreationError] = useState('');
+
   const [credentials, setCredentials] = useState({
     name: "",
     username: "",
@@ -16,6 +18,7 @@ function CreateAccount({ onLoginSuccess }) {
 
   const handleCreateAccountSubmit = async (e) => {
     e.preventDefault();
+
     try {
       await axios.post(
         `${process.env.REACT_APP_AUTH_URL}/users/create-account`,
@@ -29,10 +32,11 @@ function CreateAccount({ onLoginSuccess }) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userId", response.data.userId);
       localStorage.setItem("userName", response.data.name);
-      window.location.href = "/user/bookings";
+      window.location.href = "/";
       onLoginSuccess();
     } catch (error) {
       console.error("Account creation failed:", error);
+      setAccountCreationError("Username already exists.");
     }
   };
 
@@ -72,6 +76,9 @@ function CreateAccount({ onLoginSuccess }) {
             onChange={handleInputChange}
           />
         </div>
+
+        {accountCreationError && <div className="error-message">{accountCreationError}</div>}
+
         <button type="submit" className="login-button">
           Submit
         </button>

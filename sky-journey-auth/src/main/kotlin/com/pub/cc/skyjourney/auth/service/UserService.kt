@@ -27,7 +27,7 @@ class UserService(
         return userRepository.findById(userId).getOrNull()
     }
 
-    fun getUserByUsername(username: String): ApplicationUser {
-        return userRepository.findByUsername(username) ?: throw RuntimeException("User not found")
+    fun getUserByUsername(username: String): ApplicationUser? {
+        return userRepository.findByUsername(username)
     }
 }

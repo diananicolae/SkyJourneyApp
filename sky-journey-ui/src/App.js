@@ -25,7 +25,7 @@ function App() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('userName');
-    window.location.href = '/user/login';
+    window.location.href = '/';
     setIsLoggedIn(false);
   };
 

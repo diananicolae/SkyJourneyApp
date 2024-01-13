@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
     path = ["/bookings"],
     produces = [MediaType.APPLICATION_JSON_VALUE]
 )
-@CrossOrigin(origins = ["*", "http://sky-journey-ui-service"])
+@CrossOrigin(origins = ["*"])
 class BookingController(
     private val bookingService: BookingService
 ) {

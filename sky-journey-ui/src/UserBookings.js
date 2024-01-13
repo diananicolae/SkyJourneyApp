@@ -26,10 +26,10 @@ function UserBookings() {
 
     const interval = setInterval(() => {
       fetchBookings();
-    }, 1000);
+    }, 5000);
 
     return () => clearInterval(interval);
-  });
+  }, [userId]);
 
   const [modalShow, setModalShow] = useState(false);
   const [modalMessage, setModalMessage] = useState('');

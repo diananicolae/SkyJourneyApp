@@ -5,12 +5,7 @@ import com.pub.cc.skyjourney.core.service.FlightService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.util.*
 
@@ -19,7 +14,7 @@ import java.util.*
     path = ["/flights"],
     produces = [MediaType.APPLICATION_JSON_VALUE]
 )
-@CrossOrigin(origins = ["*", "http://sky-journey-ui-service"])
+@CrossOrigin(origins = ["*"])
 class FlightController(
     private val flightService: FlightService
 ) {

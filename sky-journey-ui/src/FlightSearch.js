@@ -77,10 +77,7 @@ function FlightSearch() {
     e.preventDefault();
     try {
       const response = await axios.get(`${process.env.REACT_APP_CORE_URL}/flights/search`, { 
-        params: searchParams,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+        params: searchParams
       });
       setFlights(response.data);
     } catch (error) {

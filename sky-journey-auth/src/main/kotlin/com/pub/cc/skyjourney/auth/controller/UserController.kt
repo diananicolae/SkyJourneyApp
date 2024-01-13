@@ -12,15 +12,24 @@ import org.springframework.web.bind.annotation.*
     path = ["/users"],
     produces = [MediaType.APPLICATION_JSON_VALUE]
 )
-@CrossOrigin(origins = ["*", "http://sky-journey-ui-service"])
+@CrossOrigin(origins = ["*"])
 class UserController(
     private val userService: UserService
 ) {
 
     @PostMapping("/create-account")
     fun createAccount(@RequestBody createUserRequest: CreateUserRequest): ResponseEntity<ApplicationUser> {
-        val user = userService.createUser(createUserRequest)
-        return ResponseEntity.ok(user)
+        if (createUserRequest.username.isBlank() || createUserRequest.password.isBlank() || createUserRequest.name.isBlank()) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        val user = userService.getUserByUsername(createUserRequest.username)
+
+        if (user != null) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        return ResponseEntity.ok(userService.createUser(createUserRequest))
     }
 
     @GetMapping

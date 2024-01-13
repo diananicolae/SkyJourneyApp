@@ -24,3 +24,6 @@ kubectl apply -f sky-journey-portainer/portainer-rbac.yaml
 kubectl apply -f sky-journey-portainer/sky-journey-portainer-deployment.yaml
 kubectl apply -f sky-journey-portainer/sky-journey-portainer-service.yaml
 kubectl apply -f https://downloads.portainer.io/ce2-19/portainer-agent-k8s-nodeport.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+kubectl apply -f k8s-config/cluster-ingress.yaml

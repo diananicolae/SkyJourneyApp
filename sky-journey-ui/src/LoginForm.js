@@ -5,6 +5,8 @@ import './LoginForm.css';
 function LoginForm({ onLoginSuccess }) {
   const [credentials, setCredentials] = useState({  username: '', password: '' });
 
+  const [loginError, setLoginError] = useState('');
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
@@ -12,16 +14,17 @@ function LoginForm({ onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await axios.post(`${process.env.REACT_APP_AUTH_URL}/login`, credentials);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
       localStorage.setItem('userName', response.data.name);
-      window.location.href = '/user/bookings';
+      window.location.href = '/';
       onLoginSuccess();
     } catch (error) {
       console.error('Login failed:', error);
-      // Handle login failure (e.g., show error message)
+      setLoginError('Incorrect username or password.');
     }
   };
 
@@ -37,6 +40,7 @@ function LoginForm({ onLoginSuccess }) {
           <label htmlFor="password">Password</label>
           <input type="password" id="password" name="password" value={credentials.password} onChange={handleInputChange} />
         </div>
+        {loginError && <div className="login-error">{loginError}</div>}
         <button type="submit" className="login-button">Log In</button>
       </form>
     </div>

@@ -128,3 +128,19 @@ resource "null_resource" "kind_cluster" {
     command = "kind delete cluster"
   }
 }
+
+resource "kubernetes_namespace" "ingress_namespace" {
+  depends_on = [null_resource.kind_cluster]
+
+  metadata {
+    name = "nginx-ingress"
+  }
+}
+
+resource "null_resource" "install_nginx_ingress" {
+  depends_on = [kubernetes_namespace.ingress_namespace]
+
+  provisioner "local-exec" {
+    command = "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml"
+  }
+}

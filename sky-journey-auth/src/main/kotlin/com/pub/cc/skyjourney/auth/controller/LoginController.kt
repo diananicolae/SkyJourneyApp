@@ -10,17 +10,14 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequestMapping(
     path = ["/login"],
     produces = [MediaType.APPLICATION_JSON_VALUE]
 )
-@CrossOrigin(origins = ["*", "http://sky-journey-ui-service"])
+@CrossOrigin(origins = ["*"])
 class LoginController(
     val authenticationManager: AuthenticationManager,
     val userService: UserService,
@@ -29,6 +26,10 @@ class LoginController(
 
     @PostMapping
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
+        if (loginRequest.username.isBlank() || loginRequest.password.isBlank()) {
+            return ResponseEntity.badRequest().build()
+        }
+
         val authenticationRequest = UsernamePasswordAuthenticationToken
             .unauthenticated(loginRequest.username, loginRequest.password)
 
@@ -38,7 +39,9 @@ class LoginController(
             val token = tokenService.generateToken(loginRequest.username)
             val user = userService.getUserByUsername(loginRequest.username)
 
-            return ResponseEntity.ok(LoginResponse(token, user.id!!, user.name))
+            if (user != null) {
+                return ResponseEntity.ok(LoginResponse(token, user.id!!, user.name))
+            }
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
