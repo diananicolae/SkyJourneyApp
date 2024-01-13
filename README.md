@@ -2,9 +2,25 @@
 
 ## Overview
 
-SkyJourney is a flight booking application that allows users to search for flights and create bookings.
-It is made up of three microservices that communicate with each other using REST APIs.
+SkyJourney is a flight booking application that allows users to search and filter flights, to create bookings, to check in for a flight, and to cancel a booking.
+It provides authentication and authorization for users.
+
+The application uses Docker images, being deployed on a Kubernetes cluster using `kind`. 
+The frontend is a React application that communicates with the backend through REST APIs. 
+The backend is composed of multiple Spring Boot microservices that communicate synchronously through HTTP requests, storing data in a MongoDB database.
+
 OpenAPI documentation can be found by running the application and accessing http://localhost:8080/swagger-ui/index.html.
+
+## Architecture
+
+Each microservice is deployed using a Docker image. The images used for deployment can be found here: https://hub.docker.com/repositories/diananicolae.
+
+The Kubernetes cluster is composed of a control plane and two worker nodes, and the infrastructure is built using Terraform.
+Depending on their functionalities, the microservice nodes are part of different namespaces.
+
+The cluster uses an Ingress controller to route traffic to the microservices.
+
+The Dockerfiles and Kubernetes configuration files can be found in each microservice's folder.
 
 ## Microservices
 
@@ -43,39 +59,47 @@ At the moment it's a dummy service that always returns a successful payment.
 Authentication and authorization microservice that handles user log in and account creation. Runs on port `8082`.
 API calls on /login return a JWT token that can be used to authorize the user for API calls to the core service.
 
-| User APIs                      | Details                            | Examples                                                                                                                                                    |
-|--------------------------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **POST** /login                | Log into an existing user account. | POST http://localhost:8082/login <br/> Content-Type: application/json <br/> ``` { "username": "test", "password": "test"}                                   |
-| **GET** /users                 | Get all existing user accounts.    | GET http://localhost:8080/users                                                                                                                             |
-| **POST** /users/create-account | Create a new user account.         | POST http://localhost:8080/users/create-account <br/> Content-Type: application/json <br/> ``` { "name":"Test Test", username": "test", "password": "test"} |
+| User APIs                      | Details                            | Examples                                                                                                                                                        |
+|--------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **POST** /login                | Log into an existing user account. | POST http://localhost:8082/login <br/> Content-Type: application/json <br/> ``` { "username": "test", "password": "test"} ```                                   |
+| **GET** /users                 | Get all existing user accounts.    | GET http://localhost:8080/users                                                                                                                                 |
+| **POST** /users/create-account | Create a new user account.         | POST http://localhost:8080/users/create-account <br/> Content-Type: application/json <br/> ``` { "name":"Test Test", username": "test", "password": "test"} ``` |
 
 5. **sky-journey-db**
 
 MongoDB database microservice, stores all the data of the application. Runs on port `27017`.
 To start the Docker container run the following commands:
 
+6. **sky-journey-dbadmin**
+
+Mongo Express microservice, provides a user interface for the MongoDB database. Runs on port `8083`.
+
+7. **sky-journey-portainer**
+
+Portainer microservice, provides a user interface for the Kubernetes cluster. Runs on port `9000`.
+
+## Setup
+
+The steps to create and run a Kubernetes cluster locally with `kind` are:
+1. Install `kind`: https://kind.sigs.k8s.io/docs/user/quick-start/
+2. Apply the Terraform configuration to create the cluster infrastructure
 ```shell
-docker build -t sky-journey-db .
-docker run --name sky-journey-db -p 27017:27017 -d sky-journey-db
+cd k8s-config
+terraform init && terraform apply # creates the cluster using create_cluster.tf
+cd ..
+terraform init && terraform apply # configures the cluster using main.tf
 ```
-
-## Kubernetes
-
-The Docker images used for deployment can be found here: https://hub.docker.com/repositories/diananicolae.
-
-The steps to create and run a Kubernetes cluster locally with Minikube are:
-1. Install and start Minikube: https://minikube.sigs.k8s.io/docs/start/
-2. Configure Docker to use Minikube's Docker daemon
-```shell
-eval $(minikube docker-env)
-```
-3. Deploy the microservices in Minikube
-
-The deployment and service YAML files can be found inside each project. To deploy the microservices run the following script, which applies the changes to the Kubernetes cluster:
+3. Wait for the cluster to be created and configured (the NGINX ingress controller can take a few minutes to start)
+4. Apply the Kubernetes configuration to deploy the microservices
 ```shell
 ./apply_kube_changes.sh
 ```
-4. Access the microservices
+5. Configure Portainer for cluster management
+6. Access the application at http://localhost:8080 using port forwarding
+```shell
+kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8080:80
+```
+7. For more details about the cluster, access the Portainer UI or use the following commands
 ```shell
 kubectl get pods # list all pods
 kubectl get services # list all services
