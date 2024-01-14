@@ -95,6 +95,12 @@ terraform init && terraform apply # configures the cluster using main.tf
 kubectl apply -f k8s-config/cluster-ingress.yaml
 ```
 5. Configure Portainer for cluster management
+``` shell
+kubectl get svc -n portainer # get portainer ClusterIP
+kubectl port-forward -n portainer svc/sky-journey-portainer-service 9000:9000
+```
+Access the Portainer UI and create a new environment from <ClusterIP>:9001.
+
 6. Access the application at http://localhost:8080 using port forwarding
 ```shell
 kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8080:80
@@ -104,6 +110,7 @@ kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8080:80
 kubectl get pods --all-namespaces --field-selector 'metadata.namespace!=kube-system' # list all pods
 kubectl get services --all-namespaces # list all services
 kubectl logs <pod-name> # get the logs for a specific pod
-kubectl port-forward -n core svc/sky-journey-core-service 8080:8080 # forward port 8080 from the pod to port 8080 on the local machine
+kubectl port-forward -n core svc/sky-journey-core-service 8080:8080 
+kubectl port-forward -n dbadmin svc/sky-journey-dbadmin-service 8083:8083
 ```
 
