@@ -90,9 +90,9 @@ cd ..
 terraform init && terraform apply # configures the cluster using main.tf
 ```
 3. Wait for the cluster to be created and configured (the NGINX ingress controller can take a few minutes to start)
-4. Apply the Kubernetes configuration to deploy the microservices
+4. Apply the ingress configuration
 ```shell
-./apply_kube_changes.sh
+kubectl apply -f k8s-config/cluster-ingress.yaml
 ```
 5. Configure Portainer for cluster management
 6. Access the application at http://localhost:8080 using port forwarding
@@ -101,21 +101,9 @@ kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8080:80
 ```
 7. For more details about the cluster, access the Portainer UI or use the following commands
 ```shell
-kubectl get pods # list all pods
-kubectl get services # list all services
+kubectl get pods --all-namespaces --field-selector 'metadata.namespace!=kube-system' # list all pods
+kubectl get services --all-namespaces # list all services
 kubectl logs <pod-name> # get the logs for a specific pod
-kubectl port-forward service/sky-journey-core 8080:8080 # forward port 8080 from the pod to port 8080 on the local machine
+kubectl port-forward -n core svc/sky-journey-core-service 8080:8080 # forward port 8080 from the pod to port 8080 on the local machine
 ```
 
-## Scripts
-
-```shell
-./update_docker_images.sh
-```
-
-Builds the JARs and updates the Docker images in the registry.
-
-```shell
-./apply_kube_changes.sh
-```
-Updates the Kubernetes pods with the latest Docker images or config changes.
